@@ -33,7 +33,7 @@ list_of_files = [
         # f"{project_name}/requirements.txt",
         # f"{project_name}/.gitignore",
         # f"{project_name}/README.md"
-]
+] ###
 for filepath in list_of_files:
     filepath = Path(filepath)
     filedir, filename = os.path.split(filepath)
