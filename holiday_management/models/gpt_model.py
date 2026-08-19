@@ -1,11 +1,22 @@
-from autogen_ext.models.openai import OpenAIChatCompletionClient
-from holiday_management.config.settings import MODEL_NAME, OPENAI_API_KEY
 from dotenv import load_dotenv
+import os
+
+from autogen_ext.models.openai import OpenAIChatCompletionClient
 
 load_dotenv()
 
-model_client  = OpenAIChatCompletionClient(
-    model =MODEL_NAME,
-    openai_api_key= OPENAI_API_KEY
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL_NAME = "gemini-3.6-flash"
 
-)   
+model_client = OpenAIChatCompletionClient(
+    model=MODEL_NAME,
+    api_key=GEMINI_API_KEY,
+    model_info={
+        "vision": True,
+        "function_calling": True,
+        "json_output": True,
+        "family": "gemini-2.0-flash",
+        "structured_output": True,
+        "multiple_system_messages": False,
+    },
+)
