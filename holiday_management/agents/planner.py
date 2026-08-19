@@ -1,5 +1,5 @@
 from autogen_agentchat.agents import AssistantAgent
-from holiday_management.models.gpt_model import model_client  
+from holiday_management.models.gpt_model import model_client
 
 planner_agent = AssistantAgent(
     name="Holiday Planner",
