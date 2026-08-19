@@ -12,3 +12,5 @@ conda create -n holiday python=3.12 -y
  3.install required packages
 
  pip install -r requirements.txt
+
+ python -m uvicorn app:app --reload

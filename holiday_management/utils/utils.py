@@ -3,8 +3,10 @@ from autogen_agentchat.conditions import TextMentionTermination
 
 def get_termination_condition():
     """
-    get the termination condition for the agent.
+    Returns the termination condition for the holiday management team.
+    The team stops when an agent explicitly outputs TERMINATE.
     """
-    TERMINATION_WORD = "stop"
-    text_mention_termination = TextMentionTermination(TERMINATION_WORD)
-    return text_mention_termination
+
+    TERMINATION_WORD = "TERMINATE"
+
+    return TextMentionTermination(TERMINATION_WORD)

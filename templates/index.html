@@ -1,0 +1,412 @@
+<!-- <!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Holiday Management</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Holiday Management</h1>
+        <form id="planForm">
+            <label for="content">Task:</label>
+            <textarea id="content" rows="6">Plan a trip to Paris for 5 days.</textarea>
+            <div class="actions">
+                <button type="submit">Run Planner</button>
+            </div>
+        </form>
+
+        <pre id="output" class="output" aria-live="polite"></pre>
+    </div>
+
+    <script>
+        const form = document.getElementById('planForm');
+        const output = document.getElementById('output');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            output.textContent = 'Running...';
+            const content = document.getElementById('content').value;
+            try {
+                const res = await fetch('/plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                if (!res.ok) {
+                    output.textContent = 'Error: ' + (await res.text());
+                    return;
+                }
+                const data = await res.json();
+                output.textContent = data.messages.map(m => `${m.source}: ${m.content}`).join('\n\n');
+            } catch (err) {
+                output.textContent = 'Request failed: ' + err;
+            }
+        });
+    </script>
+</body>
+
+</html> -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HolidayAI — Plan Your Perfect Holiday with AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+    <!-- ===== Header ===== -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M2 16.5L22 12L2 7.5L4 12L2 16.5Z" fill="#fff" />
+                    </svg>
+                </span>
+                <span class="brand-name">Holiday<span>AI</span></span>
+            </div>
+            <nav class="main-nav">
+                <a href="#top">Home</a>
+                <a href="#agents">Explore</a>
+                <a href="#planner">My Trips</a>
+                <a href="#about">About</a>
+            </nav>
+            <div class="header-actions">
+                <span class="badge-ai"><span class="dot"></span> AI Powered</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="top">
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <span class="eyebrow">✈️ Multi-agent AI travel planning</span>
+                <h1>Plan Your Perfect <span class="accent">Holiday</span> with AI</h1>
+                <p class="lead">Tell us where you want to go, and our AI travel agents will research destinations and
+                    craft a personalized holiday plan — itinerary, stays and all.</p>
+                <div class="hero-ctas">
+                    <a href="#planner" class="btn btn-primary">Start Planning ✈️</a>
+                    <a href="#agents" class="btn btn-ghost">See how it works</a>
+                </div>
+                <div class="hero-chip-row">
+                    <span class="hero-chip">🌍 Destinations</span>
+                    <span class="hero-chip">🏨 Hotels</span>
+                    <span class="hero-chip">🗺️ Itineraries</span>
+                    <span class="hero-chip">🤖 AI Agents</span>
+                </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="postcard p1 floaty" style="--r:-6deg;">
+                    <div class="postcard-emoji">🗼</div>
+                    <h4>5-Day Paris Escape</h4>
+                    <p>Museums, cafés & a Seine river evening.</p>
+                </div>
+                <div class="postcard p2 floaty delay1" style="--r:5deg;">
+                    <div class="postcard-emoji">🧳</div>
+                    <h4>Your itinerary is ready</h4>
+                    <div class="route"><span>Tokyo</span> → <b>7 days</b> → <span>Planned</span></div>
+                </div>
+                <div class="postcard p3 floaty delay2" style="--r:3deg;">
+                    <div class="postcard-emoji">🏝️</div>
+                    <h4>Goa Beach Retreat</h4>
+                    <p>Relaxed schedule, budget-friendly stays.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Planner Card ===== -->
+    <div class="planner-wrap" id="planner">
+        <div class="planner-card">
+            <h2>Where do you want to go?</h2>
+            <p class="subtitle">Let our AI travel team build your personalized itinerary.</p>
+
+            <form id="planForm">
+                <div class="field-label">Your trip request</div>
+                <textarea id="content"
+                    placeholder="Example: Plan a 5-day trip to Paris with sightseeing, food, hotels and a relaxed schedule...">Plan a trip to Paris for 5 days.</textarea>
+
+                <div class="planner-actions">
+                    <button type="submit" class="btn btn-run" id="runBtn">
+                        <span class="spinner"></span>
+                        <span class="btn-label">✈️ Run Planner</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="chip-label">Quick destinations</div>
+            <div class="chip-row">
+                <button type="button" class="dest-chip"
+                    data-text="Plan a 5-day trip to Paris with sightseeing, food, hotels and a relaxed schedule.">🇫🇷
+                    Paris</button>
+                <button type="button" class="dest-chip"
+                    data-text="Plan a 7-day trip to Tokyo covering culture, food, technology and day trips.">🇯🇵
+                    Tokyo</button>
+                <button type="button" class="dest-chip"
+                    data-text="Plan a 6-day trip to Rome with historical sites, food tours and nearby day trips.">🇮🇹
+                    Rome</button>
+                <button type="button" class="dest-chip"
+                    data-text="Plan a 4-day luxury trip to Dubai with shopping, desert safari and fine dining.">🇦🇪
+                    Dubai</button>
+                <button type="button" class="dest-chip"
+                    data-text="Plan an 8-day trip to Switzerland with scenic trains, hiking and mountain towns.">🇨🇭
+                    Switzerland</button>
+                <button type="button" class="dest-chip"
+                    data-text="Plan a relaxed 5-day beach holiday in Goa with water sports and local food.">🇮🇳
+                    Goa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Results ===== -->
+    <section class="section" id="results">
+        <div class="section-head">
+            <span class="eyebrow">Your AI Holiday Plan</span>
+            <h2>Where your trip comes together</h2>
+            <p>Once the AI agents finish researching and planning, your personalized holiday plan appears here.</p>
+        </div>
+        <div class="results-shell">
+            <div class="results-empty" id="resultsEmpty">
+                <div class="icon">🧭</div>
+                <h4>No plan yet</h4>
+                <p>Enter a destination above and hit "Run Planner" to get started.</p>
+            </div>
+            <div class="results-inner" id="resultsInner"></div>
+        </div>
+    </section>
+
+    <!-- ===== Agents ===== -->
+    <section class="section" id="agents">
+        <div class="section-head">
+            <span class="eyebrow">🤖 Meet your AI travel team</span>
+            <h2>Two agents, one great holiday</h2>
+            <p>Behind every plan, two specialized AI agents work together to turn your idea into a complete trip.</p>
+        </div>
+        <div class="agents-flow">
+            <div class="agent-card planner">
+                <div class="agent-icon">🤖</div>
+                <h3>Holiday Planner</h3>
+                <p>Creates personalized itineraries, day-by-day activities and a schedule that fits your pace.</p>
+            </div>
+            <div class="flow-path">
+                <svg viewBox="0 0 70 40">
+                    <path class="flow-dash" d="M2 20 H68" />
+                </svg>
+            </div>
+            <div class="agent-card researcher">
+                <div class="agent-icon">🔎</div>
+                <h3>Holiday Researcher</h3>
+                <p>Researches destinations, attractions, hotels and practical, local recommendations.</p>
+            </div>
+        </div>
+        <p class="flow-caption"><b>You</b> → <b>Planner</b> → <b>Researcher</b> → <b>Your Holiday Plan</b></p>
+    </section>
+
+    <!-- ===== Features ===== -->
+    <section class="section" id="about">
+        <div class="section-head">
+            <span class="eyebrow">Why HolidayAI</span>
+            <h2>Everything a great holiday needs</h2>
+            <p>One request in, a complete travel plan out — built by agents that specialize in different parts of your
+                trip.</p>
+        </div>
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="f-icon">🗺️</div>
+                    <h4>Personalized Itineraries</h4>
+                    <p>Day-by-day plans shaped around your interests and pace.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="f-icon">🏨</div>
+                    <h4>Stay Recommendations</h4>
+                    <p>Hotel and neighborhood suggestions that fit your trip.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="f-icon">🍽️</div>
+                    <h4>Food &amp; Experiences</h4>
+                    <p>Local dishes, restaurants and things worth doing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="f-icon">💰</div>
+                    <h4>Budget Planning</h4>
+                    <p>Options that respect how much you want to spend.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="f-icon">📅</div>
+                    <h4>Day-by-Day Scheduling</h4>
+                    <p>A clear, realistic schedule from arrival to departure.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="f-icon">🤖</div>
+                    <h4>Multi-Agent AI Planning</h4>
+                    <p>Planning and research agents working together for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
+        <div class="cta-section">
+            <h2>Ready to plan your next adventure?</h2>
+            <p>Let AI turn your travel idea into a complete holiday plan.</p>
+            <a href="#planner" class="btn btn-primary">Plan My Holiday ✈️</a>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <span class="brand-name">Holiday<span style="color:var(--turquoise)">AI</span></span>
+            <div>Your AI-powered travel companion.</div>
+        </div>
+    </footer>
+
+    <script>
+        // ---- DOM references (ids preserved from the original implementation) ----
+        const form = document.getElementById('planForm');
+        const contentField = document.getElementById('content');
+        const runBtn = document.getElementById('runBtn');
+        const resultsEmpty = document.getElementById('resultsEmpty');
+        const resultsInner = document.getElementById('resultsInner');
+
+        // ---- Quick destination chips ----
+        document.querySelectorAll('.dest-chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                contentField.value = chip.dataset.text;
+                contentField.focus();
+                document.getElementById('planner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // ---- Minimal markdown-lite renderer (headings, bold, bullet/numbered lists, paragraphs) ----
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function renderMarkdownLite(text) {
+            const lines = escapeHtml(text).split(/\r?\n/);
+            let html = '';
+            let inList = false;
+
+            const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+            const inline = (s) => s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            lines.forEach((raw) => {
+                const line = raw.trim();
+                if (!line) { closeList(); return; }
+
+                const heading = line.match(/^#{1,4}\s+(.*)$/);
+                const bullet = line.match(/^[-*•]\s+(.*)$/);
+                const numbered = line.match(/^\d+[.)]\s+(.*)$/);
+
+                if (heading) {
+                    closeList();
+                    html += `<h4>${inline(heading[1])}</h4>`;
+                } else if (bullet || numbered) {
+                    if (!inList) { html += '<ul>'; inList = true; }
+                    html += `<li>${inline((bullet || numbered)[1])}</li>`;
+                } else {
+                    closeList();
+                    html += `<p>${inline(line)}</p>`;
+                }
+            });
+            closeList();
+            return html || `<p>${escapeHtml(text)}</p>`;
+        }
+
+        function agentMeta(source) {
+            const s = (source || '').toLowerCase();
+            if (s.includes('planner')) return { cls: 'planner', icon: '🤖', label: source || 'Holiday Planner' };
+            if (s.includes('research')) return { cls: 'researcher', icon: '🔎', label: source || 'Holiday Researcher' };
+            if (s.includes('user')) return { cls: 'user', icon: '🧑', label: source || 'You' };
+            return { cls: 'generic', icon: '💬', label: source || 'Agent' };
+        }
+
+        function renderResults(messages) {
+            resultsEmpty.style.display = 'none';
+            resultsInner.classList.add('visible');
+
+            let html = '<h3 class="result-title">🧳 Your AI Holiday Plan</h3>';
+            messages.forEach((m) => {
+                const meta = agentMeta(m.source);
+                html += `
+                    <div class="msg-card ${meta.cls}">
+                        <div class="msg-head">
+                            <span class="avatar">${meta.icon}</span>
+                            <span>${escapeHtml(meta.label)}</span>
+                        </div>
+                        <div class="msg-body">${renderMarkdownLite(String(m.content ?? ''))}</div>
+                    </div>`;
+            });
+            resultsInner.innerHTML = html;
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderError(message) {
+            resultsEmpty.style.display = 'none';
+            resultsInner.classList.add('visible');
+            resultsInner.innerHTML = `
+                <h3 class="result-title">🧳 Your AI Holiday Plan</h3>
+                <div class="results-error">
+                    <span class="icon">⚠️</span>
+                    <div>
+                        <strong>We couldn't build your plan right now.</strong><br>
+                        ${escapeHtml(message)}
+                    </div>
+                </div>`;
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function setLoading(isLoading) {
+            runBtn.disabled = isLoading;
+            runBtn.classList.toggle('loading', isLoading);
+            runBtn.querySelector('.btn-label').textContent = isLoading ? 'Planning your trip…' : '✈️ Run Planner';
+        }
+
+        // ---- Original API integration, preserved: POST /plan with { content } ----
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            const content = contentField.value;
+            try {
+                const res = await fetch('/plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                if (!res.ok) {
+                    const errText = await res.text();
+                    renderError(errText || `Request failed with status ${res.status}.`);
+                    return;
+                }
+                const data = await res.json();
+                renderResults(data.messages || []);
+            } catch (err) {
+                renderError('Please check your connection and try again. (' + err + ')');
+            } finally {
+                setLoading(false);
+            }
+        });
+    </script>
+</body>
+
+</html>

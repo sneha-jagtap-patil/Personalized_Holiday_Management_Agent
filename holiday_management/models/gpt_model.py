@@ -6,7 +6,7 @@ from autogen_ext.models.openai import OpenAIChatCompletionClient
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-3.6-flash"
+MODEL_NAME = "gemini-3.5-flash-lite"
 
 model_client = OpenAIChatCompletionClient(
     model=MODEL_NAME,
